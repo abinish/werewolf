@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GameState.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Role.cs" />
     <Compile Include="WerewolfGame.cs" />

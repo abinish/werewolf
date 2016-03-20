@@ -1,0 +1,148 @@
+﻿@model Werewolf.Models.WerewolfGame
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script language="JavaScript">
+    window.__preloadedData.Game = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model));
+</script>
+
+
+<div ng-controller="HomeController" ng-cloak>
+	<div>
+		<h1>Welcome to the Werewolf App!</h1><br />
+
+		@* Waiting page *@
+		<div ng-show="!haveJoinedGame && game.HasStarted">
+			<div>The game has already started.  Please come back when it has ended.</div>
+		</div>
+
+		@* Pregame lobby *@
+		<div ng-show="!game.HasStarted">
+			<div>
+				<h2>Players:</h2>
+				<div ng-repeat="player in game.Players">
+					<div style="display: inline;">{{player.Username}}</div>
+					<button style="display: inline;" ng-click="removePlayer(player.Username)">Remove Player</button>
+				</div>
+			</div>
+			<div ng-show="!haveJoinedGame">
+				<h2>Join Game:</h2><br />
+				Your unique username:
+				<input type="text" ng-model="username" />
+				<button ng-click="joinGame()">Join Game</button>
+			</div>
+			<div ng-show="haveJoinedGame">
+				<h2>Start Game!</h2>
+				# of Burn Cards:
+				<input type="number" value="0" ng-model="burnCards" />
+				<button ng-click="startGame()">Start Game!</button>
+			</div>
+		</div>
+		@* Game logic below: *@
+		<div ng-show="haveJoinedGame && game.HasStarted">
+			<div ng-show="game.DidWerewolvesWin">
+				<h2>The Werewolves have killed all of the villagers!</h2>
+				<button ng-click="resetGame()">Start new game</button>
+			</div>
+
+			<div ng-show="!game.DidVillagersWin">
+				<h2>The Villagers are victorious and have slain all of the werewolves</h2>
+				<button ng-click="resetGame()">Start new game</button>
+			</div>
+
+			<div ng-show="!game.DidWerewolvesWin && !game.DidVillagersWin">
+				@* Day Time *@
+				<div ng-show="isDay">
+					Your role: {{role}}
+				
+					<div ng-show="showRelatedPlayers">
+						These players are in the same role as you:
+						<div ng-repeat="name in othersInSameRole"> {{name}}</div>
+					</div>
+
+					<div ng-show="game.KilledPlayers.length > 0">
+						<h2>These people have died:</h2>
+						<div ng-repeat="player in game.KilledPlayers">
+							{{player.Username}} has died.  They were a {{getRoleNameFor(player.Role)}}.
+						</div>
+					</div>
+
+					<br />
+					<h2>Select the person that has died today:</h2>
+					<div ng-repeat="player in game.Players">
+						<button style="padding: 10px;" ng-click="lynchPlayer(player.Username)">{{player.Username}}</button>
+					</div>
+
+				</div>
+
+				@* Hunter *@
+				<div ng-show="isHunter  && isPlayerHunter">
+					<h2>You have died today.  Who would you like to take out with you as your final act of vengeance?</h2>
+
+					<div ng-repeat="player in game.Players">
+						<button style="padding: 10px;" ng-click="hunterKill(player.Username)">{{player.Username}}</button>
+					</div>
+
+				</div>
+
+				@* Fortune Teller *@
+				<div ng-show="isFortuneTeller && isPlayerFortuneTeller">
+					<div ng-show="!hasSeenPlayer">
+						<h2>Who's role would you like to see?</h2>
+
+						<div ng-repeat="player in game.Players">
+							<button style="padding: 10px;" ng-click="showPlayer(player.Username)">{{player.Username}}</button>
+						</div>
+					</div>
+
+					<div ng-show="hasSeenPlayer">
+						{{selectedPlayer.Username}}'s role is: {{getRoleNameFor(selectedPlayer.Role)}}
+						<button ng-click="advancePastFortuneTeller()">Advance</button>
+					</div>
+				</div>
+
+				@* Werewolves *@
+				<div ng-show="isWerewolves  && isPlayerWerewolf">
+					<h2>Select the player to kill:</h2>
+					<div ng-repeat="player in game.Players">
+						<button style="padding: 10px;" ng-click="killPlayerByWerewolves(player.Username)">{{player.Username}}</button>
+					</div>
+				</div>
+
+				@* Witch *@
+				<div ng-show="isWitch && isPlayerWitch">
+					<div ng-show="game.WitchHasSaveRemaining">
+						<div ng-show="!witchSaved">		
+							<div style="display: inline;">This person has died and you have 1 save remaining: {{playerKilled}}</div>
+							<button style="display: inline;" ng-click="witchSave(playerKilled)">Save Player</button>
+						</div>
+
+						<div ng-show="witchSaved">
+							You saved {{playerKilled}}!
+						</div>
+					</div>
+
+					<div ng-show="game.WitchHasKillRemaining">
+						<div ng-show="witchKilling.length == 0">
+							<div ng-repeat="player in game.Players">
+								<button ng-click="witchKill(player.Username)">{{player.Username}}</button>
+							</div>
+						</div>
+
+						<div ng-show="witchKilling.length != 0">
+							You have chosen to kill: {{witchKilling}}
+						</div>
+					</div>
+
+					<div ng-show="!game.WitchHasSaveRemaining && !game.WitchHasKillRemaining">
+						<h2>You have already killed and saved someone this game.</h2>
+					</div>
+
+					<button ng-click="witchActions()">Advance</button>
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>

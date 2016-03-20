@@ -5,3 +5,10 @@ C:\Users\binisha\Documents\Visual Studio 2012\Projects\Werewolf.DAL\Werewolf.DAL
 C:\Users\binisha\Documents\Visual Studio 2012\Projects\Werewolf.DAL\Werewolf.DAL\obj\Debug\Werewolf.DAL.csprojResolveAssemblyReference.cache
 C:\Users\binisha\Documents\Visual Studio 2012\Projects\Werewolf.DAL\Werewolf.DAL\obj\Debug\Werewolf.DAL.dll
 C:\Users\binisha\Documents\Visual Studio 2012\Projects\Werewolf.DAL\Werewolf.DAL\obj\Debug\Werewolf.DAL.pdb
+C:\Users\binisha\Documents\GitHub\Werewolf\Werewolf.DAL\Werewolf.DAL\bin\Debug\Werewolf.DAL.dll
+C:\Users\binisha\Documents\GitHub\Werewolf\Werewolf.DAL\Werewolf.DAL\bin\Debug\Werewolf.DAL.pdb
+C:\Users\binisha\Documents\GitHub\Werewolf\Werewolf.DAL\Werewolf.DAL\bin\Debug\AWS.Extensions.dll
+C:\Users\binisha\Documents\GitHub\Werewolf\Werewolf.DAL\Werewolf.DAL\bin\Debug\AWSSDK.dll
+C:\Users\binisha\Documents\GitHub\Werewolf\Werewolf.DAL\Werewolf.DAL\obj\Debug\Werewolf.DAL.csprojResolveAssemblyReference.cache
+C:\Users\binisha\Documents\GitHub\Werewolf\Werewolf.DAL\Werewolf.DAL\obj\Debug\Werewolf.DAL.dll
+C:\Users\binisha\Documents\GitHub\Werewolf\Werewolf.DAL\Werewolf.DAL\obj\Debug\Werewolf.DAL.pdb

@@ -1,8 +1,13 @@
-﻿@{
-    ViewBag.Title = "Home Page";
-}
-
-<h2>@ViewBag.Message</h2>
-<p>
-    To learn more about ASP.NET MVC visit <a href="http://asp.net/mvc" title="ASP.NET MVC Website">http://asp.net/mvc</a>.
-</p>
+﻿<!DOCTYPE html>
+<html ng-app>
+<head>
+    <title ng-bind="helloAngular"></title>
+</head>
+<body>
+    
+    <input type="text" ng-model="helloAngular" />
+    <h1>{{helloAngular}}</h1>
+    
+    <script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.20/angular.min.js"></script>
+</body>
+</html>

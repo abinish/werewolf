@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace Werewolf.DAL
 {
-    public class Class1
+    public class DynamoDBClient
     {
+		////private Amazon.DynamoDBv2.ama
+
+		////public void DynamoDbClient()
+		////{
+		////	var x = new Amazon.DynamoDBv2.AmazonDynamoDBClient(
+		////	x.
+		////}
     }
 }

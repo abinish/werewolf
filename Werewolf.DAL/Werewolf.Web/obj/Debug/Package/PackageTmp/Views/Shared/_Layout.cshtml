@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<!--[if lt IE 8]>      <html class="no-js lt-ie9 lt-ie8" data-placeholder-focus="false"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" data-placeholder-focus="false"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" data-placeholder-focus="false">
+<!--<![endif]-->
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<link href="https://s3.amazonaws.com/DSUEL/v0.6.15/styles/duel.css" rel="stylesheet" />
+	<script src="https://s3.amazonaws.com/DSUEL/v0.6.15/scripts/duel.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<meta name="msapplication-TileColor" content="#00467F" />
+	<script src="Scripts/jquery.signalR-2.2.0.min.js"></script>
+	<script src="~/signalr/hubs"></script>
+	@*TODO: Temporary - get DUEL to update to latest font awesome*@
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+
+
+	<title>@(ViewBag.Title ?? "Werewolf")</title>
+
+	@Styles.Render("~/Content/css")
+	<script language="javascript">
+	    //Global bag where MVC views can store pre-loaded data for the client
+	    //Clients can then access this data using PreloadService.js
+	    window.__preloadedData = {};
+	</script>
+</head>
+<body ng-app="werewolf" ng-cloak>
+	@*{ Html.RenderPartial("_LayoutHeader"); }*@
+
+	<section role="main">
+		<div class="container width95Percent">
+			<div class="container-wrapper">
+				@RenderBody()
+			</div>
+		</div>
+	</section>
+
+	@Scripts.Render("~/bundles/scripts")
+	@Scripts.Render("~/bundles/jquery")
+	@RenderSection("scripts", required: false)
+</body>
+
+</html>

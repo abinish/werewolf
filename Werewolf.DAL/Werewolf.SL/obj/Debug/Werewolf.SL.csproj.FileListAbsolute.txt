@@ -1,0 +1,5 @@
+C:\Users\binisha\Documents\GitHub\Werewolf\Werewolf.DAL\Werewolf.SL\bin\Debug\Werewolf.SL.dll
+C:\Users\binisha\Documents\GitHub\Werewolf\Werewolf.DAL\Werewolf.SL\bin\Debug\Werewolf.SL.pdb
+C:\Users\binisha\Documents\GitHub\Werewolf\Werewolf.DAL\Werewolf.SL\obj\Debug\Werewolf.SL.csprojResolveAssemblyReference.cache
+C:\Users\binisha\Documents\GitHub\Werewolf\Werewolf.DAL\Werewolf.SL\obj\Debug\Werewolf.SL.dll
+C:\Users\binisha\Documents\GitHub\Werewolf\Werewolf.DAL\Werewolf.SL\obj\Debug\Werewolf.SL.pdb
