@@ -115,7 +115,7 @@ namespace Werewolf.Web.Hubs
 		public void ResetGame()
 		{
 			Controllers.HomeController._game = new WerewolfGame();
-			Clients.All.updateGame(Controllers.HomeController._game);
+			Clients.All.resetGame(Controllers.HomeController._game);
 		}
 
 

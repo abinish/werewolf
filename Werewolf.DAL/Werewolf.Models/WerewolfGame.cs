@@ -11,6 +11,7 @@ namespace Werewolf.Models
 		public WerewolfGame()
 		{
 			Players = new List<Player>();
+			KilledPlayers = new List<Player>();
 		}
 
         #region Properties
@@ -47,7 +48,7 @@ namespace Werewolf.Models
 			foreach (var player in Players)
 			{
 				var random = new Random();
-				var value = random.Next();
+				var value = random.Next(roles.Count);
 				var role = roles[value];
 				roles.RemoveAt(value);
 				player.Role = role;

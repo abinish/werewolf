@@ -55,9 +55,10 @@
 
 		    $scope.showPlayer = function (username) {
 		        $scope.hasSeenPlayer = true;
-		        $scope.selectedPlayer = $scope.game.Players.filter(function (obj) {
-		            return obj.username == username;
+		        var players = $scope.game.Players.filter(function (obj) {
+		            return obj.Username == username;
 		        });
+		        $scope.selectedPlayer = players[0];
 		    };
 
 		    $scope.getRoleNameFor = function (role) {
@@ -83,6 +84,17 @@
 
 		        if (!updatedGame.GameStarted)
 		            return;
+
+		        if (!$scope.game.GameStarted && updatedGame.GameStarted) {
+		            $scope.isDay = true;
+		            $scope.isFortuneTeller = false;
+		            $scope.isHunter = false;
+		            $scope.isWerewolves = false;
+		            $scope.isWitch = false;
+		            $scope.$apply();
+		            return;
+		        }
+
 
 		        if ($scope.game.CurrentGameState == 1 && updatedGame.CurrentGameState == 2) {
 		            //Day to fortune teller
@@ -118,7 +130,7 @@
 		            alert("WTF ARE YOU DOING. THIS ISNT SUPPOSED TO HAPPEN!?!?!?");
 		        }
 
-
+		        $scope.$apply();
 		    };
 
 
@@ -145,12 +157,27 @@
 
 		    };
 
+		    $scope.hub.client.resetGame = function (game) {
+		        $scope.username = "";
+		        $scope.playerRole;
+		        $scope.burnCards = 0;
+		        $scope.isDay = false;
+		        $scope.isFortuneTeller = false;
+		        $scope.isHunter = false;
+		        $scope.isWerewolves = false;
+		        $scope.isWitch = false;
+		        $scope.role = "";
+		        $scope.haveJoinedGame = false;
+		        $scope.game = game;
+		    };
+
 		    $scope.determineRole = function () {
-		        if (haveJoinedGame && $scope.game.HasStarted) {
+		        if ($scope.haveJoinedGame && $scope.game.GameStarted) {
 		            var result = $scope.game.Players.filter(function (obj) {
-		                return obj.username == $scope.username;
+		                return obj.Username == $scope.username;
 		            });
 		            if (result) {
+		                result = result[0];
 		                if (result.Role == 1) {
 		                    $scope.role = "Fortune Teller";
 		                } else if (result.Role == 2) {
@@ -171,7 +198,7 @@
 		                } else if (result.Role == 6) {
 		                    $scope.role = "Twin";
 		                    var otherTwin = $scope.game.Players.filter(function (obj) {
-		                        return obj.username !== $scope.username && obj.Role == 6;
+		                        return obj.Username !== $scope.username && obj.Role == 6;
 		                    });
 		                    $scope.othersInSameRole = [];
 		                    $scope.othersInSameRole.push(otherTwin.Username);
@@ -184,7 +211,7 @@
 		    };
 		    //send
 		    $scope.startGame = function () {
-		        $scope.hub.server.startGame();
+		        $scope.hub.server.startGame($scope.burnCards);
 		    };
 
 		    $scope.endGame = function () {
