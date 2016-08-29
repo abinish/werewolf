@@ -4,6 +4,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.AspNet.SignalR;
 using Werewolf.Models;
+using System.Threading;
 
 namespace Werewolf.Web.Hubs
 {
@@ -49,10 +50,32 @@ namespace Werewolf.Web.Hubs
 			if (player.Role == Role.Hunter)
 			{
 				Controllers.HomeController._game.CurrentGameState = GameState.Hunter;
+				Clients.All.updateGame(Controllers.HomeController._game);
 			}
-			else
+			else //Need to support the case where fortune teller is dead
 			{
-				Controllers.HomeController._game.CurrentGameState = GameState.FortuneTeller;
+				AdvanceToFortuneTeller();
+			}
+		}
+
+		private void AdvanceToFortuneTeller()
+		{
+			Controllers.HomeController._game.CurrentGameState = GameState.FortuneTeller;
+
+			var fortuneTellerAlive = Controllers.HomeController._game.Players.Any(_ => _.Role == Role.FortuneTeller);
+			var fortuneTellerInGame = !Controllers.HomeController._game.BurnedRoles.Any(_ => _ == Role.FortuneTeller);
+
+			if (!fortuneTellerAlive && fortuneTellerInGame)
+			{
+				Controllers.HomeController._game.CurrentGameState = GameState.Werewolves;
+				Controllers.HomeController._game.KilledPlayers = new List<Player>();
+			}
+			else if (!fortuneTellerInGame)
+			{
+				Clients.All.updateGame(Controllers.HomeController._game);
+				Thread.Sleep(10000);
+				Controllers.HomeController._game.CurrentGameState = GameState.Werewolves;
+				Controllers.HomeController._game.KilledPlayers = new List<Player>();
 			}
 			Clients.All.updateGame(Controllers.HomeController._game);
 		}
@@ -63,9 +86,7 @@ namespace Werewolf.Web.Hubs
 			Controllers.HomeController._game.KilledPlayers.Add(player);
 			Controllers.HomeController._game.Players.Remove(player);
 
-			Controllers.HomeController._game.CurrentGameState = GameState.FortuneTeller;
-			
-			Clients.All.updateGame(Controllers.HomeController._game);
+			AdvanceToFortuneTeller();
 		}
 
 		public void AdvancePastFortuneTeller()
@@ -80,10 +101,29 @@ namespace Werewolf.Web.Hubs
 			var player = Controllers.HomeController._game.Players.Single(x => x.Username == username);
 			Controllers.HomeController._game.KilledPlayers.Add(player);
 			Controllers.HomeController._game.Players.Remove(player);
-			Controllers.HomeController._game.CurrentGameState = GameState.Witch;
+			AdvanceToWitch();
+		}
 
+		private void AdvanceToWitch()
+		{
+			Controllers.HomeController._game.CurrentGameState = GameState.Witch	;
+
+			var witchAlive = Controllers.HomeController._game.Players.Any(_ => _.Role == Role.Witch);
+			var witchInGame = !Controllers.HomeController._game.BurnedRoles.Any(_ => _ == Role.Witch);
+
+			if (!witchAlive && witchInGame)
+			{
+				Controllers.HomeController._game.CurrentGameState = GameState.Day;
+			}
+			else if (!witchInGame)
+			{
+				Clients.All.updateGame(Controllers.HomeController._game);
+				Thread.Sleep(10000);
+				Controllers.HomeController._game.CurrentGameState = GameState.Day;
+			}
 			Clients.All.updateGame(Controllers.HomeController._game);
 		}
+
 
 		public void WitchActions(string savedPlayer, string killedPlayer)
 		{

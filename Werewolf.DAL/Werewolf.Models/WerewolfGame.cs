@@ -19,6 +19,7 @@ namespace Werewolf.Models
 		public bool GameStarted { get; set; }
         public IList<Player> Players { get; set; }
 		public int BurnCards { get; set; }
+		public IList<Role> BurnedRoles { get; set; }
 		public IList<Player> KilledPlayers { get; set; }
 		public GameState CurrentGameState { get; set; }
 		public bool WitchHasKillRemaining { get; set; }
@@ -53,6 +54,8 @@ namespace Werewolf.Models
 				roles.RemoveAt(value);
 				player.Role = role;
 			}
+
+			BurnedRoles = roles;
 		}
 
 		public void IsGameOver()

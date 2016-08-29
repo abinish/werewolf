@@ -30,7 +30,9 @@
 			<div ng-show="!haveJoinedGame">
 				<h2>Join Game:</h2><br />
 				Your unique username:
-				<input type="text" ng-model="username" />
+				<input type="text" ng-model="username" /><br />
+				Sound enabled:
+				<input type="checkbox" ng-model="useAudio" ng-click="toggleAudio()"/><br />
 				<button ng-click="joinGame()">Join Game</button>
 			</div>
 			<div ng-show="haveJoinedGame">
@@ -92,7 +94,7 @@
 					<div ng-show="!hasSeenPlayer">
 						<h2>Who's role would you like to see?</h2>
 
-						<div ng-repeat="player in game.Players">
+						<div ng-repeat="player in game.Players | filter:{Role:FortuneTeller}:false">
 							<button style="padding: 10px;" ng-click="showPlayer(player.Username)">{{player.Username}}</button>
 						</div>
 					</div>
@@ -115,8 +117,8 @@
 				<div ng-show="isWitch && isPlayerWitch()">
 					<div ng-show="game.WitchHasSaveRemaining">
 						<div ng-show="!witchSaved">		
-							<div style="display: inline;">This person has died and you have 1 save remaining: {{playerKilled}}</div>
-							<button style="display: inline;" ng-click="witchSave(playerKilled)">Save Player</button>
+							<div style="display: inline;">This person has died and you have 1 save remaining: {{playerKilled}}</div><br />
+							<button style="display: inline;" ng-click="witchSave(playerKilled)">Save Player</button><br />
 						</div>
 
 						<div ng-show="witchSaved">
@@ -125,6 +127,7 @@
 					</div>
 
 					<div ng-show="game.WitchHasKillRemaining">
+						You have 1 kill remaining.  Would you like to kill anyone?
 						<div ng-show="witchKilling.length == 0">
 							<div ng-repeat="player in game.Players">
 								<button ng-click="witchKill(player.Username)">{{player.Username}}</button>
@@ -139,7 +142,7 @@
 					<div ng-show="!game.WitchHasSaveRemaining && !game.WitchHasKillRemaining">
 						<h2>You have already killed and saved someone this game.</h2>
 					</div>
-
+					<br />
 					<button ng-click="witchActions()">Advance</button>
 				</div>
 

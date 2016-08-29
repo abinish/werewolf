@@ -1,6 +1,6 @@
 ﻿var app = angular.module("werewolf").controller("HomeController",
-	["$scope", "PreloadService", "GameService",
-		function ($scope, preloadService, gameService) {
+	["$scope", "PreloadService", "GameService", "$timeout",
+		function ($scope, preloadService, gameService, $timeout) {
 		    $scope.game = angular.copy(preloadService.GetPreloadedData("Game"));
 		    $scope.players = $scope.game.Players;
 		    $scope.username = "";
@@ -13,9 +13,85 @@
 		    $scope.isWitch = false;
 		    $scope.role = "";
 		    $scope.haveJoinedGame = false;
+		    $scope.useAudio = false;
 		    $scope.othersInSameRole = [];
 		    $scope.showRelatedPlayers = $scope.othersInSameRole.length > 0;
+		    
+		    $scope.toggleAudio = function () {
+		    	$scope.useAudio = !$scope.useAudio;
+		    };
+		    $scope.playAudio = function (text) {
+		    	if (!$scope.useAudio)
+		    		return;
 
+		    	if (window.speechSynthesis) {
+		    		var msg = new SpeechSynthesisUtterance();
+		    	}
+		    	msg.volume =  1;
+		    	msg.rate = 0.5;
+		    	msg.pitch = 1;
+				//message for speech
+		    	msg.text = text;
+				speechSynthesis.speak(msg);
+		    	
+		    	//var audio = new Audio('Content/tone.mp3');
+		        //audio.play();
+		    };
+
+		    $scope.playLynching = function (username) {
+		    	var players = $scope.game.Players.filter(function (obj) {
+		    		return obj.Username == username;
+		    	});
+		    	var selectedPlayer = players[0];
+		    	$scope.playAudio("You have all decided to kill " + username + ". They were a " + $scope.getRoleNameFor(selectedPlayer.Role));
+		    };
+
+		    $scope.playWerewolfInstructions = function () {
+		    	$scope.playAudio("Thank you.  Please go to sleep.");
+		    	
+		    	function finishInstructions() {
+		    		$scope.playAudio("Can my wearewolves awaken.");
+		    		$scope.playAudio("Please select someone to kill tonight");
+		    	}
+
+		    	$timeout(finishInstructions, 2000);
+		    };
+
+		    $scope.playFortuneTellerInstructions = function () {
+		    	$scope.playAudio("Can the village fall asleep?");
+		    	function finishInstructions() {
+		    		//Spelling mistakes are correct for the talk to text to sound right
+		    		$scope.playAudio("Can my fortune teller awaken.");
+		    		$scope.playAudio("Who's role would you like to see");
+		    	}
+
+		    	$timeout(finishInstructions, 2000);
+		    };
+
+		    $scope.playWitchInstructions = function () {
+		    	$scope.playAudio("Thank you.  Please go to sleep.");
+
+		    	function finishInstructions() {
+		    		$scope.playAudio("Can my witch awaken.");
+		    		$scope.playAudio("Would you like to do anything tonight?");
+		    	}
+
+		    	$timeout(finishInstructions, 2000);
+		    };
+
+		    $scope.playStartofDay = function (peopleWhoDied) {
+		    	$scope.playAudio("Can everyone wake up.");
+
+		    	if(peopleWhoDied.length = 0){
+		    		$scope.playAudio("Last night was a relatively peaceful night.  It is a rare sight as there were no deaths.");
+		    	}else if(peopleWhoDied.length = 1){
+		    		$scope.playAudio("Last night was a terrible night.  Sadly, " + peopleWhoDied[0].Username + " was found mauled to death in their bed.  They were a " + $scope.getRoleNameFor(peopleWhoDied[0].Role));
+		    	}else if(peopleWhoDied.length = 2){
+		    		$scope.playAudio("Last night was a terrible night.  Sadly, " + peopleWhoDied[0].Username + " was found mauled to death in their bed.  They were a " + $scope.getRoleNameFor(peopleWhoDied[0].Role));
+		    		$scope.playAudio("Even more devastating is that " + peopleWhoDied[1].Username + " was also found strangled to death in their living room.  They were a " + $scope.getRoleNameFor(peopleWhoDied[0].Role));
+		    	}
+
+		    };
 		    
 		    //Witch Actions
 		    $scope.witchSaved = false;
@@ -92,6 +168,7 @@
 		            $scope.isWerewolves = false;
 		            $scope.isWitch = false;
 		            $scope.$apply();
+		            $scope.playAudio("The game has started.  Who would you like to kill today?");
 		            return;
 		        }
 
@@ -100,33 +177,48 @@
 		            //Day to fortune teller
 		            $scope.isDay = false
 		            $scope.isFortuneTeller = true;
+		            $scope.playFortuneTellerInstructions();
 
 		        } else if ($scope.game.CurrentGameState == 1 && updatedGame.CurrentGameState == 5) {
 		            //Day to hunter
 		            $scope.isDay = false;
 		            $scope.isHunter = true;
+					//TODO: Play hunter instructions ------------------------------------------------------------------------
 
 		        } else if ($scope.game.CurrentGameState == 5 && updatedGame.CurrentGameState == 2) {
 		            //Hunter to fortune teller
 		            $scope.isHunter = false;
 		            $scope.isFortuneTeller = true;
+		            $scope.playFortuneTellerInstructions();
 
 		        } else if ($scope.game.CurrentGameState == 2 && updatedGame.CurrentGameState == 3) {
 		            //Fortune teller to werewolves
 		            $scope.isFortuneTeller = false;
 		            $scope.isWerewolves = true;
+		            $scope.playWerewolfInstructions();
 
 		        } else if ($scope.game.CurrentGameState == 3 && updatedGame.CurrentGameState == 4) {
 		            //Werewolves to witch
 		            $scope.isWerewolves = false;
 		            $scope.isWitch = true;
+		            $scope.playWitchInstructions();
 
 		        } else if ($scope.game.CurrentGameState == 4 && updatedGame.CurrentGameState == 1) {
 		            //Witch To day
 		            $scope.isWitch = false;
 		            $scope.isDay = true;
+		            $scope.playStartofDay();
+					//WTF IS GOING ON HERE
+
+		        } else if ($scope.game.CurrentGameState == 1 && updatedGame.CurrentGameState == 3) {
+		        	//day To werewolves
+		        	$scope.isWerewolves = true;
+		        	$scope.isDay = false;
+		        	$scope.playWerewolfInstructions();
 
 		        } else {
+		        	console.log("CurrentState: " + $scope.game.CurrentGameState);
+		        	console.log("NextStage: " + updatedGame.CurrentGameState);
 		            alert("WTF ARE YOU DOING. THIS ISNT SUPPOSED TO HAPPEN!?!?!?");
 		        }
 
@@ -144,6 +236,8 @@
 		        if (!$scope.game.GameStarted) {
 		            $scope.hub.server.joinGame($scope.username);
 		            $scope.haveJoinedGame = true;
+						            
+		            $scope.playAudio($scope.username + " has joined the game.");
 		        }
 		    };
 
