@@ -37,7 +37,7 @@
 		    	//var audio = new Audio('Content/tone.mp3');
 		        //audio.play();
 		    };
-
+			//comment to check in
 		    $scope.playLynching = function (username) {
 		    	var players = $scope.game.Players.filter(function (obj) {
 		    		return obj.Username == username;
