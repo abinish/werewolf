@@ -3,3 +3,8 @@ C:\Users\binisha\Documents\GitHub\Werewolf\Werewolf.DAL\Werewolf.Models\bin\Debu
 C:\Users\binisha\Documents\GitHub\Werewolf\Werewolf.DAL\Werewolf.Models\obj\Debug\Werewolf.Contracts.csprojResolveAssemblyReference.cache
 C:\Users\binisha\Documents\GitHub\Werewolf\Werewolf.DAL\Werewolf.Models\obj\Debug\Werewolf.Models.dll
 C:\Users\binisha\Documents\GitHub\Werewolf\Werewolf.DAL\Werewolf.Models\obj\Debug\Werewolf.Models.pdb
+C:\Users\Austin\Documents\GitHub\werewolf\Werewolf.DAL\Werewolf.Models\bin\Debug\Werewolf.Models.dll
+C:\Users\Austin\Documents\GitHub\werewolf\Werewolf.DAL\Werewolf.Models\bin\Debug\Werewolf.Models.pdb
+C:\Users\Austin\Documents\GitHub\werewolf\Werewolf.DAL\Werewolf.Models\obj\Debug\Werewolf.Contracts.csprojResolveAssemblyReference.cache
+C:\Users\Austin\Documents\GitHub\werewolf\Werewolf.DAL\Werewolf.Models\obj\Debug\Werewolf.Models.dll
+C:\Users\Austin\Documents\GitHub\werewolf\Werewolf.DAL\Werewolf.Models\obj\Debug\Werewolf.Models.pdb
