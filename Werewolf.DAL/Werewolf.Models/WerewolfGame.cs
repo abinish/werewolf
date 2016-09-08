@@ -21,6 +21,10 @@ namespace Werewolf.Models
 		public int BurnCards { get; set; }
 		public IList<Role> BurnedRoles { get; set; }
 		public IList<Player> KilledPlayers { get; set; }
+		public Player DayKilledPlayer { get; set; }
+		public Player HunterKilledPlayer { get; set; }
+		public Player WerewolfKilledPlayer { get; set; }
+		public Player WitchKilledPlayer { get; set; }
 		public GameState CurrentGameState { get; set; }
 		public bool WitchHasKillRemaining { get; set; }
 		public bool WitchHasSaveRemaining { get; set; }
@@ -65,7 +69,7 @@ namespace Werewolf.Models
 			if (werewolves == 0)
 				DidVillagersWin = true;
 
-			if (werewolves > villagers)
+			if (werewolves > villagers && CurrentGameState != GameState.Hunter && CurrentGameState != GameState.Witch && (CurrentGameState != GameState.Werewolves && KilledPlayers.Any(_ => _.Role == Role.Witch) && (WitchHasSaveRemaining || WitchHasKillRemaining)))
 				DidWerewolvesWin = true;
 		}
 

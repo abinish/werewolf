@@ -45,12 +45,14 @@ namespace Werewolf.Web.Hubs
 		public void LynchPlayer(string username)
 		{
 			var player = Controllers.HomeController._game.Players.Single(x => x.Username == username);
+			Controllers.HomeController._game.KilledPlayers = new List<Player>();
+			Controllers.HomeController._game.DayKilledPlayer = player;
 			Controllers.HomeController._game.KilledPlayers.Add(player);
 			Controllers.HomeController._game.Players.Remove(player);
 			if (player.Role == Role.Hunter)
 			{
 				Controllers.HomeController._game.CurrentGameState = GameState.Hunter;
-				Clients.All.updateGame(Controllers.HomeController._game);
+				SendGameUpdateToClient();
 			}
 			else //Need to support the case where fortune teller is dead
 			{
@@ -72,17 +74,19 @@ namespace Werewolf.Web.Hubs
 			}
 			else if (!fortuneTellerInGame)
 			{
-				Clients.All.updateGame(Controllers.HomeController._game);
+				SendGameUpdateToClient();
 				Thread.Sleep(10000);
 				Controllers.HomeController._game.CurrentGameState = GameState.Werewolves;
 				Controllers.HomeController._game.KilledPlayers = new List<Player>();
 			}
-			Clients.All.updateGame(Controllers.HomeController._game);
+			SendGameUpdateToClient();
 		}
 
 		public void HunterKill(string username)
 		{
 			var player = Controllers.HomeController._game.Players.Single(x => x.Username == username);
+			Controllers.HomeController._game.KilledPlayers = new List<Player>();
+			Controllers.HomeController._game.HunterKilledPlayer = player;
 			Controllers.HomeController._game.KilledPlayers.Add(player);
 			Controllers.HomeController._game.Players.Remove(player);
 
@@ -93,12 +97,14 @@ namespace Werewolf.Web.Hubs
 		{
 			Controllers.HomeController._game.CurrentGameState = GameState.Werewolves;
 			Controllers.HomeController._game.KilledPlayers = new List<Player>();
-			Clients.All.updateGame(Controllers.HomeController._game);
+			SendGameUpdateToClient();
 		}
 
 		public void KillPlayerByWerewolves(string username)
 		{
 			var player = Controllers.HomeController._game.Players.Single(x => x.Username == username);
+			Controllers.HomeController._game.KilledPlayers = new List<Player>();
+			Controllers.HomeController._game.WerewolfKilledPlayer = player;
 			Controllers.HomeController._game.KilledPlayers.Add(player);
 			Controllers.HomeController._game.Players.Remove(player);
 			AdvanceToWitch();
@@ -108,7 +114,7 @@ namespace Werewolf.Web.Hubs
 		{
 			Controllers.HomeController._game.CurrentGameState = GameState.Witch	;
 
-			var witchAlive = Controllers.HomeController._game.Players.Any(_ => _.Role == Role.Witch);
+			var witchAlive = Controllers.HomeController._game.Players.Any(_ => _.Role == Role.Witch) || Controllers.HomeController._game.WerewolfKilledPlayer.Role == Role.Witch;
 			var witchInGame = !Controllers.HomeController._game.BurnedRoles.Any(_ => _ == Role.Witch);
 
 			if (!witchAlive && witchInGame)
@@ -117,11 +123,11 @@ namespace Werewolf.Web.Hubs
 			}
 			else if (!witchInGame)
 			{
-				Clients.All.updateGame(Controllers.HomeController._game);
+				SendGameUpdateToClient();
 				Thread.Sleep(10000);
 				Controllers.HomeController._game.CurrentGameState = GameState.Day;
 			}
-			Clients.All.updateGame(Controllers.HomeController._game);
+			SendGameUpdateToClient();
 		}
 
 
@@ -133,6 +139,9 @@ namespace Werewolf.Web.Hubs
 				{
 					var player = Controllers.HomeController._game.KilledPlayers.Single(x => x.Username == savedPlayer);
 					Controllers.HomeController._game.WitchHasSaveRemaining = false;
+
+					Controllers.HomeController._game.WerewolfKilledPlayer = null;
+					Controllers.HomeController._game.KilledPlayers.Remove(player);
 					Controllers.HomeController._game.Players.Add(player);
 				}
 			}
@@ -143,13 +152,14 @@ namespace Werewolf.Web.Hubs
 				{
 					var player = Controllers.HomeController._game.Players.Single(x => x.Username == killedPlayer);
 					Controllers.HomeController._game.WitchHasKillRemaining = false;
+					Controllers.HomeController._game.WitchKilledPlayer = player;
 					Controllers.HomeController._game.KilledPlayers.Add(player);
 					Controllers.HomeController._game.Players.Remove(player);
 				}
 			}
 			
 			Controllers.HomeController._game.CurrentGameState = GameState.Day;
-			Clients.All.updateGame(Controllers.HomeController._game);
+			SendGameUpdateToClient();
 		}
 
 		public void ResetGame()
@@ -159,6 +169,10 @@ namespace Werewolf.Web.Hubs
 		}
 
 
-
+		public void SendGameUpdateToClient()
+		{
+			Controllers.HomeController._game.IsGameOver();
+			Clients.All.updateGame(Controllers.HomeController._game);
+		}
 	}
 }
