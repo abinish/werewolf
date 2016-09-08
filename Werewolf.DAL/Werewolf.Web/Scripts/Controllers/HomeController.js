@@ -118,8 +118,6 @@
 			$scope.selectedPlayer = {};
 
 			//Werewolves actions
-			$scope.playerKilled = "";
-
 
 			$scope.isPlayerWerewolf = function () {
 				return $scope.Role === "Werewolf";
@@ -162,6 +160,7 @@
 					$scope.playStartofDay();
 				} else if (updatedGame.CurrentGameState == 2) {
 					//Fortune teller
+					$scope.hasSeenPlayer = false;
 					$scope.playFortuneTellerInstructions();
 
 				} else if (updatedGame.CurrentGameState == 3) {
@@ -242,7 +241,11 @@
 
 						//You were killed. Remove you from game
 					} else {
-						$scope.haveJoinedGame = false;
+						var witchKilledByWerewolves = $scope.game.WerewolfKilledPlayer && $scope.game.WerewolfKilledPlayer.Role === 2 && $scope.Role === 'Witch' && $scope.game.CurrentGameState === 4;
+
+						if (!witchKilledByWerewolves) {
+							$scope.haveJoinedGame = false;
+						}
 					}
 				}
 			};
@@ -263,14 +266,13 @@
 				var save = "";
 				var kill = $scope.witchKilling;
 				if ($scope.witchSaved) {
-					save = $scope.playerKilled;
+					save = $scope.game.WerewolfKilledPlayer.Username;
 				}
 
 				$scope.hub.server.witchActions(save, kill);
 			};
 
 			$scope.killPlayerByWerewolves = function (username) {
-				$scope.playerKilled = username;
 				$scope.hub.server.killPlayerByWerewolves(username);
 			};
 

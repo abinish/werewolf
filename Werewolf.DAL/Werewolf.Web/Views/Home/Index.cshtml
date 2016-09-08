@@ -131,6 +131,12 @@
 						</div>
 					</div>
 
+					<div ng-show="!game.WitchHasSaveRemaining">
+						<div>
+							This person has died: {{game.WerewolfKilledPlayer.Username}}.  You cannot save them.
+						</div>
+					</div>
+
 					<div ng-show="game.WitchHasKillRemaining">
 						You have 1 kill remaining.  Would you like to kill anyone?
 						<div ng-show="witchKilling.length == 0">
