@@ -39,6 +39,7 @@ namespace Werewolf.Web.Hubs
 		{
 			Controllers.HomeController._game.BurnCards = burnCards;
 			Controllers.HomeController._game.InitializeGame();
+			Controllers.HomeController._game.Players = Controllers.HomeController._game.Players.OrderBy(_ => _.Username).ToList();
 			Clients.All.updateGame(Controllers.HomeController._game);
 		}
 
@@ -49,6 +50,7 @@ namespace Werewolf.Web.Hubs
 			Controllers.HomeController._game.DayKilledPlayer = player;
 			Controllers.HomeController._game.KilledPlayers.Add(player);
 			Controllers.HomeController._game.Players.Remove(player);
+			Controllers.HomeController._game.Players = Controllers.HomeController._game.Players.OrderBy(_ => _.Username).ToList();
 			if (player.Role == Role.Hunter)
 			{
 				Controllers.HomeController._game.CurrentGameState = GameState.Hunter;
@@ -89,6 +91,7 @@ namespace Werewolf.Web.Hubs
 			Controllers.HomeController._game.HunterKilledPlayer = player;
 			Controllers.HomeController._game.KilledPlayers.Add(player);
 			Controllers.HomeController._game.Players.Remove(player);
+			Controllers.HomeController._game.Players = Controllers.HomeController._game.Players.OrderBy(_ => _.Username).ToList();
 
 			AdvanceToFortuneTeller();
 		}
@@ -107,6 +110,7 @@ namespace Werewolf.Web.Hubs
 			Controllers.HomeController._game.WerewolfKilledPlayer = player;
 			Controllers.HomeController._game.KilledPlayers.Add(player);
 			Controllers.HomeController._game.Players.Remove(player);
+			Controllers.HomeController._game.Players = Controllers.HomeController._game.Players.OrderBy(_ => _.Username).ToList();
 			AdvanceToWitch();
 		}
 
@@ -159,6 +163,7 @@ namespace Werewolf.Web.Hubs
 			}
 			
 			Controllers.HomeController._game.CurrentGameState = GameState.Day;
+			Controllers.HomeController._game.Players = Controllers.HomeController._game.Players.OrderBy(_ => _.Username).ToList();
 			SendGameUpdateToClient();
 		}
 

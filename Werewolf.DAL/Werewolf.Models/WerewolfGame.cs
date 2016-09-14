@@ -46,6 +46,8 @@ namespace Werewolf.Models
 		public void DetermineRoles()
 		{
 			var roles = new List<Role>();
+			if (BurnCards < 0)
+				BurnCards = 0;
 			var cardsToUse = BurnCards + Players.Count;
 
 			roles = GenerateRolePossibilities(cardsToUse);
@@ -60,6 +62,9 @@ namespace Werewolf.Models
 			}
 
 			BurnedRoles = roles;
+
+			if (!Players.Any(_ => _.Role == Role.Werewolf) && Players.Count() != 1)
+				DetermineRoles();
 		}
 
 		public void IsGameOver()
