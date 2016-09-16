@@ -55,8 +55,7 @@
 			</div>
 
 			<div ng-show="!game.DidWerewolvesWin && !game.DidVillagersWin">
-				@* Day Time *@
-				<div ng-show="game.CurrentGameState === 1">
+				<div ng-show="game.CurrentGameState === 1 || game.CurrentGameState === 2">
 					<div>
 						Your role is: {{Role}}
 					</div>
@@ -68,6 +67,10 @@
 							{{player}}<br />
 						</div>
 					</div>
+				</div>
+				@* Day Time *@
+				<div ng-show="game.CurrentGameState === 1">
+					
 
 					<div ng-show="game.KilledPlayers.length > 0">
 						<h2>These people have died:</h2>
