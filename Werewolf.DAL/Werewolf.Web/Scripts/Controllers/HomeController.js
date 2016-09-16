@@ -151,7 +151,7 @@
 					return;
 
 				if (!$scope.game.GameStarted && updatedGame.GameStarted) {
-					$scope.playAudio("The game has started.  Who would you like to kill today?");
+					$scope.playFortuneTellerInstructions();
 					return;
 				}
 

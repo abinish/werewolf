@@ -38,7 +38,7 @@ namespace Werewolf.Models
 			WitchHasKillRemaining = true;
 			WitchHasSaveRemaining = true;
 			DetermineRoles();
-			CurrentGameState = GameState.Day;
+			CurrentGameState = GameState.FortuneTeller;
 			GameStarted = true;
 
 		}
