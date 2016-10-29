@@ -34,13 +34,7 @@
 				//audio.play();
 			};
 
-			$scope.playLynching = function (username) {
-				var players = $scope.game.Players.filter(function (obj) {
-					return obj.Username == username;
-				});
-				var selectedPlayer = players[0];
-				$scope.playAudio("You have all decided to kill " + username + ". They were a " + selectedPlayer.RoleName);
-			};
+			
 
 			$scope.playWerewolfInstructions = function () {
 				$scope.playAudio("Thank you.  Please go to sleep.");
@@ -77,14 +71,14 @@
 				$timeout(finishInstructions, 2000);
 			};
 
-			$scope.playStartofDay = function () {
+			$scope.playStartofDay = function (updatedGame) {
 				$scope.playAudio("Can everyone wake up.");
 
-				if ($scope.game.KilledPlayers.length === 0) {
+				if (updatedGame.KilledPlayers.length === 0) {
 					$scope.playAudio("Last night was a peaceful night.  It is a rare sight as there were no deaths.");
-				} else if ($scope.game.KilledPlayers.length === 1) {
+				} else if (updatedGame.KilledPlayers.length === 1) {
 					$scope.playAudio("Last night was a tragic night.  Sadly, " + $scope.game.KilledPlayers[0].Username + " was found mauled to death in their bed.  They were a " + $scope.game.KilledPlayers[0].RoleName);
-				} else if ($scope.game.KilledPlayers.length === 2) {
+				} else if (updatedGame.KilledPlayers.length === 2) {
 					$scope.playAudio("Last night was a horific night.  Sadly, " + $scope.game.KilledPlayers[0].Username + " was found mauled to death in their bed.  They were a " + $scope.game.KilledPlayers[0].RoleName);
 					$scope.playAudio("Even more devastating is that " + $scope.game.KilledPlayers[1].Username + " was also found strangled to death in their living room.  They were a " + $scope.game.KilledPlayers[0].RoleName);
 				}
@@ -157,7 +151,7 @@
 
 				if (updatedGame.CurrentGameState == 1) {
 					//Day
-					$scope.playStartofDay();
+				    $scope.playStartofDay(updatedGame);
 				} else if (updatedGame.CurrentGameState == 2) {
 					//Fortune teller
 					$scope.hasSeenPlayer = false;
@@ -220,6 +214,14 @@
 				$scope.game = game;
 			};
 
+			$scope.hub.client.playLynching = function (username) {
+			    var players = $scope.game.Players.filter(function (obj) {
+			        return obj.Username == username;
+			    });
+			    var selectedPlayer = players[0];
+			    $scope.playAudio("You have all decided to kill " + username + ". They were a " + selectedPlayer.RoleName);
+			};
+
 			$scope.determineRole = function () {
 				if ($scope.haveJoinedGame && $scope.game.GameStarted) {
 					var result = $scope.game.Players.filter(function (obj) {
@@ -239,11 +241,11 @@
 							});
 						}
 
-						//You were killed. Remove you from game
+						//You were killed. Remove you from game unless you were killed by werewolves, then hold on
 					} else {
-						var witchKilledByWerewolves = $scope.game.WerewolfKilledPlayer && $scope.game.WerewolfKilledPlayer.Role === 2 && $scope.Role === 'Witch' && $scope.game.CurrentGameState === 4;
+						var killedByWerewolves = $scope.game.WerewolfKilledPlayer && $scope.game.CurrentGameState === 4;
 
-						if (!witchKilledByWerewolves) {
+						if (!killedByWerewolves) {
 							$scope.haveJoinedGame = false;
 						}
 					}

@@ -51,6 +51,9 @@ namespace Werewolf.Web.Hubs
 			Controllers.HomeController._game.KilledPlayers.Add(player);
 			Controllers.HomeController._game.Players.Remove(player);
 			Controllers.HomeController._game.Players = Controllers.HomeController._game.Players.OrderBy(_ => _.Username).ToList();
+
+            Clients.All.playLynching(username);
+
 			if (player.Role == Role.Hunter)
 			{
 				Controllers.HomeController._game.CurrentGameState = GameState.Hunter;
